@@ -37,7 +37,7 @@ The system is trained to recognize a wide range of wildlife, including:
 
 * Python 3.9 or higher
 * Trained YOLOv8 weights file, `main.pt`, placed in the project root
-* A Gmail (or other SMTP) account with an **app password** for sending alerts — see the security note below before doing anything else
+* A Gmail (or other SMTP) account with an **app password** for sending alerts, see the security note below before doing anything else
 
 ### 1. Clone the repository
 
@@ -65,7 +65,7 @@ Or, if you maintain a `requirements.txt`:
 pip install -r requirements.txt
 ```
 
-### 4. Configure email alerts — ⚠️ required security step
+### 4. Configure email alerts ⚠️ required security step
 
 The alerting code currently expects an SMTP login and a recipient address. **Do not hardcode these values in the source file.** Create a `.env` file in the project root instead:
 
@@ -87,11 +87,11 @@ Then load these with `os.getenv(...)` (via the `python-dotenv` import already in
 streamlit run app.py
 ```
 
-The app opens in your browser. Sign up for a ranger/admin account (or log in if you already have one), then choose an input type — image, video, or webcam — to start detection. Any detected animal above the confidence threshold triggers an email alert to the configured recipient.
+The app opens in your browser. Sign up for a ranger/admin account (or log in if you already have one), then choose an input type (image, video, or webcam) to start detection. Any detected animal above the confidence threshold triggers an email alert to the configured recipient.
 
 ## 🔒 Security Notes
 
-* Passwords are hashed with PBKDF2-SHA256 before being stored in SQLite — never stored or compared in plain text.
+* Passwords are hashed with PBKDF2-SHA256 before being stored in SQLite, never stored or compared in plain text.
 * SMTP credentials must be supplied via environment variables (see step 4), not hardcoded.
 * The SQLite database file (`user_database.db`) and any `.env` file should be excluded from version control via `.gitignore`.
 
