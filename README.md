@@ -79,7 +79,7 @@ ALERT_RECIPIENT=ranger_or_authority@example.com
 
 Then load these with `os.getenv(...)` (via the `python-dotenv` import already in the app) instead of passing literal strings to `smtplib`. Add `.env` to `.gitignore` so it is never committed.
 
-> **If credentials were ever hardcoded and pushed to a repo, rotate that app password immediately in your Google Account's App Passwords settings, even after removing it from the code** — it remains recoverable from git history otherwise.
+> **If credentials were ever hardcoded and pushed to a repo, rotate that app password immediately in your Google Account's App Passwords settings, even after removing it from the code** it remains recoverable from git history otherwise.
 
 ### 5. Run the app
 
