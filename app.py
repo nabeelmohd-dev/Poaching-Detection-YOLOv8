@@ -4,6 +4,7 @@ from ultralytics import YOLO
 import cv2
 import math
 import cvzone
+import time
 import tempfile
 import numpy as np
 import sqlite3
@@ -17,9 +18,14 @@ SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587)) 
 SENDER_EMAIL = os.getenv("SENDER_EMAIL") 
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD") 
-s = smtplib.SMTP(SMTP_SERVER, SMTP_PORT) 
-s.starttls() 
-s.login(SENDER_EMAIL, SENDER_PASSWORD)
+
+try:
+    s = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+    s.starttls()
+    s.login(SENDER_EMAIL, SENDER_PASSWORD)
+except Exception as e:
+    st.warning(f"Email alerts disabled: {e}")
+    s = None
 
 
 ANIMAL_CLASSES = [
@@ -38,10 +44,6 @@ ANIMAL_CLASSES = [
     'turtle', 'whale', 'wolf', 'wombat', 'woodpecker', 'zebra'
 ]
 
-
-
-def load_animal_model():
-    return YOLO('main.pt')
 
 def create_connection(db_file):
     try:
@@ -83,28 +85,32 @@ def validate_login(username, password, conn):
 def process_frame(frame, model, classes):
     frame = cv2.resize(frame, (640, 480))
     results = model(frame, stream=True)
-    animal_detected = False
-    detected_animal = ""
+
+    if "last_alert_time" not in st.session_state:
+        st.session_state.last_alert_time = 0
+
     for result in results:
         boxes = result.boxes
         for box in boxes:
             confidence = math.ceil(box.conf[0] * 100)
             if confidence < 50:
                 continue
-                
+
             class_id = int(box.cls[0])
             x1, y1, x2, y2 = map(int, box.xyxy[0])
-            
+
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
-            cvzone.putTextRect(frame, f'{classes[class_id]} {confidence}%', 
+            cvzone.putTextRect(frame, f'{classes[class_id]} {confidence}%',
                              (x1 + 8, y1 - 20), scale=1, thickness=1)
-            if classes[class_id] in ANIMAL_CLASSES:
-                    animal_detected = True
-                    detected_animal = classes[class_id]   
-            if animal_detected:
+
+            detected_animal = classes[class_id]
+            now = time.time()
+            if now - st.session_state.last_alert_time > 60:  # 60s cooldown between alerts
                 subject = "Animal Detected Alert!"
                 message = f"Subject: {subject}\n\nAn animal ({detected_animal}) has been detected."
-                s.sendmail(SENDER_EMAIL, os.getenv("RECIPIENT_EMAIL"), message) 
+                s.sendmail(SENDER_EMAIL, os.getenv("RECIPIENT_EMAIL"), message)
+                st.session_state.last_alert_time = now
+
     return frame
 
 # UI functions
