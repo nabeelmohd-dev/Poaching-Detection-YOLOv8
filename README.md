@@ -42,8 +42,8 @@ The system is trained to recognize a wide range of wildlife, including:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/WildlifeGuard.git
-cd WildlifeGuard
+git clone https://github.com/nabeelmohd-dev/Poaching-Detection-YOLOv8.git
+cd Poaching-Detection-YOLOv8
 ```
 
 ### 2. Set up a virtual environment (recommended)
@@ -74,7 +74,7 @@ SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 SENDER_EMAIL=your_email@example.com
 SENDER_PASSWORD=your_gmail_app_password
-ALERT_RECIPIENT=ranger_or_authority@example.com
+RECIPIENT_EMAIL=ranger_or_authority@example.com
 ```
 
 Then load these with `os.getenv(...)` (via the `python-dotenv` import already in the app) instead of passing literal strings to `smtplib`. Add `.env` to `.gitignore` so it is never committed.
