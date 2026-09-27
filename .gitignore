@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+
+# Environment / secrets
+.env
+*.env
+
+# Databases (runtime state, never commit)
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
