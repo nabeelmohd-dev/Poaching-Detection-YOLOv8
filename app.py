@@ -10,14 +10,16 @@ import sqlite3
 import smtplib
 import os
 from dotenv import load_dotenv
-s = smtplib.SMTP('smtp.gmail.com', 587)
-s.starttls()
-s.login("praveenjana6@gmail.com", "nljjrcmxbstkacar")
-
 
 # Security improvements
 load_dotenv()
-
+SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com") 
+SMTP_PORT = int(os.getenv("SMTP_PORT", 587)) 
+SENDER_EMAIL = os.getenv("SENDER_EMAIL") 
+SENDER_PASSWORD = os.getenv("SENDER_PASSWORD") 
+s = smtplib.SMTP(SMTP_SERVER, SMTP_PORT) 
+s.starttls() 
+s.login(SENDER_EMAIL, SENDER_PASSWORD)
 
 
 ANIMAL_CLASSES = [
@@ -102,7 +104,7 @@ def process_frame(frame, model, classes):
             if animal_detected:
                 subject = "Animal Detected Alert!"
                 message = f"Subject: {subject}\n\nAn animal ({detected_animal}) has been detected."
-                s.sendmail("praveenjana6@gmail.com", "ismailrockz111@gmail.com", message) 
+                s.sendmail(SENDER_EMAIL, os.getenv("RECIPIENT_EMAIL"), message) 
     return frame
 
 # UI functions
